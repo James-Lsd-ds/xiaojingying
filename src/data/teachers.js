@@ -26,7 +26,7 @@ export const teachers = [
     id: 1,
     name: 'Sarah Johnson',
     nationality: '美国 🇺🇸',
-    photo: femaleAvatar + '1',
+    photo: new URL('../assets/images/086d32bad550d125a619e808dc594a23.jpg', import.meta.url).href,
     experience: 8,
     specialty: '日常口语、商务英语',
     intro: '来自纽约，在中国生活多年，了解中国学生的发音难点，擅长帮助学生建立开口自信心。',
