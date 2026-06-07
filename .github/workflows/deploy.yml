@@ -1,0 +1,55 @@
+# GitHub Actions 自动部署工作流
+# 每次推送代码到 main 分支时，自动构建并部署到 GitHub Pages
+name: 部署到 GitHub Pages
+
+on:
+  # 当推送到 main 分支时触发
+  push:
+    branches: [main]
+  # 允许手动触发部署
+  workflow_dispatch:
+
+# 设置 GitHub Pages 权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 确保同时只运行一个部署任务
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # 第一步：下载代码
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      # 第二步：安装 Node.js
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 第三步：安装依赖并构建
+      - name: 安装依赖
+        run: npm install
+
+      - name: 构建项目
+        run: npm run build
+
+      # 第四步：部署到 GitHub Pages
+      - name: 上传构建产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
